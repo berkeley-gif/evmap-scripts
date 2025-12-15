@@ -1,0 +1,69 @@
+# Large data files
+*.json
+*.geojson
+*.gdb/
+*.kmz
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Output directory (generated files)
+jurisdiction_script/out/
+
+# Large data directory contents
+jurisdiction_script/data/grids/*.json
+jurisdiction_script/data/grids/*.geojson
+jurisdiction_script/data/other/*.json
+jurisdiction_script/data/other/*.geojson
+jurisdiction_script/data/boundaries/*geojson(1)
+
+# Keep directory structure
+!.gitkeep

@@ -1,0 +1,111 @@
+jurisdictions:
+  - name: napa_american_canyon
+    boundary: boundaries\american_canyon_city_boundary.geojson
+  - name: napa_calistoga
+    boundary: boundaries\calistoga_city_boundary.geojson
+  - name: napa_napa
+    boundary: boundaries\napa_city_boundary.geojson
+  - name: napa_st._helena
+    boundary: boundaries\st._helena_city_boundary.geojson
+  - name: napa_yountville
+    boundary: boundaries\yountville_city_boundary.geojson
+  - name: napa_unincorporated
+    boundary: boundaries\un_napa_boundary.geojson
+  - name: napa_whole_county
+    boundary: boundaries\whole_napa_boundary.geojson
+
+priority:
+  pixels: pop\pop_updated.json
+  attributes:
+    # List attributes here. For each file, multiple columns can be specified
+    # CalEnviroScreen
+    - file: other\ces4\CES4 Final Shapefile.shp
+      columns:
+        - column: CIscoreP
+          name: CIscoreP
+          join: nearest
+        - column: OzoneP
+          name: OzoneP
+          join: nearest
+        - column: DieselPM_P
+          name: DieselPM_P
+          join: nearest
+        - column: PesticideP
+          name: PesticideP
+          join: nearest
+        - column: PM2_5_P
+          name: PM2_5_P
+          join: nearest
+        - column: TrafficP
+          name: TrafficP
+          join: nearest
+        - column: AsthmaP
+          name: AsthmaP
+          join: nearest
+        - column: LowBirWP
+          name: LowBirWP
+          join: nearest
+        - column: CardiovasP
+          name: CardiovasP
+          join: nearest
+        - column: EducatP
+          name: EducatP
+          join: nearest
+        - column: Ling_IsolP
+          name: Ling_IsolP
+          join: nearest
+        - column: PovertyP
+          name: PovertyP
+          join: nearest
+        - column: UnemplP
+          name: UnemplP
+          join: nearest
+        - column: HousBurdP
+          name: HousBurdP
+          join: nearest
+        - column: PopCharP
+          name: PopCharP
+          join: nearest
+    # Census: multi-family and renters
+    - file: census\mfre.json
+      columns:
+        - column: "% MF"
+          name: Multi-Family Housing Residents
+          join: popmul
+        - column: "% R"
+          name: Renters
+          join: popmul
+    # EVs per 10,000
+    - file: other\lev.json
+      columns:
+        - column: lev_10000
+          name: lev_10000
+          join: numeric
+feasibility:
+  pixels: grids\pge.json
+  attributes:
+    # List attributes here. For each file, multiple columns can be specified
+    # NEVI
+    - file: other\nevi.json
+      columns:
+        - column: nevi
+          name: nevi
+          join: binary
+    # IRS 30c
+    - file: other\irs30c.json
+      columns:
+        - column: irs30c
+          name: irs30c
+          join: binary
+    # PG&E
+    - file: other\pgelines.json
+      columns:
+        - column: LoadCapacity_kW
+          name: pge
+          join: max
+    # Publicly-owned parcels
+    - file: other\napa_pubparcels.json
+      columns:
+        - column: publiclyowned
+          name: publiclyowned
+          join: binary_full

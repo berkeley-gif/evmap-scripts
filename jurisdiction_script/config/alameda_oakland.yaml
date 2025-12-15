@@ -1,0 +1,51 @@
+county: alameda
+city: oakland
+boundary: boundaries\oakland_city_boundary.geojson
+
+priority:
+  pixels: pop\pop.json
+  attributes:
+    # List attributes here. For each file, multiple columns can be specified
+    # CalEnviroScreen
+    - file: other\ces4\CES4 Final Shapefile.shp
+      columns:
+        - column: CIscoreP
+          name: CIscoreP
+          join: nearest
+    # Census: multi-family and renters
+    - file: census\mfre.json
+      columns:
+        - column: "% MF"
+          name: Multi-Family Housing Residents
+          join: popmul
+        - column: "% R"
+          name: Renters
+          join: popmul
+    # EVs per 10,000
+    - file: other\lev.json
+      columns:
+        - column: lev_10000
+          name: lev_10000
+          join: numeric
+feasibility:
+  pixels: grids\pge.json
+  attributes:
+    # List attributes here. For each file, multiple columns can be specified
+    # NEVI
+    - file: other\nevi.json
+      columns:
+        - column: nevi
+          name: nevi
+          join: binary
+    # IRS 30c
+    - file: other\irs30c.json
+      columns:
+        - column: irs30c
+          name: irs30c
+          join: binary
+    # PG&E
+    - file: other\pgelines.json
+      columns:
+        - column: LoadCapacity_kW
+          name: pge
+          join: max
