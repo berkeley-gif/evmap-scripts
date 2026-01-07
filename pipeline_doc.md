@@ -122,6 +122,9 @@ sdge = gpd.GeoDataFrame(sdge, geometry='geometry')
 sdge.set_crs(epsg=4326, inplace=True)
 sdge.to_file('sdge_load.geojson', driver='GeoJSON')
 ```
+> [!NOTE]
+> No login was required for me to download. Attempt to download GeoJSON fails to execute. Was able to download Shapefile. Shapefile has shortened field names so the script needs to be modified to deal with that. ICAWOF_UNILOAD -> ICAWOF_UNI, ICAWNOF_UNILOAD -> ICAWNOF_UN
+> Shapefile is in PseudoMercator so the set_crs command instead needs to be to_crs.
 
 ### 1.3 Los Angeles Department of Water and Power (LADWP)
 
