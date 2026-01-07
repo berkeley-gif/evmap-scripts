@@ -82,6 +82,11 @@ pge.set_crs(epsg=4326, inplace=True)
 pge.to_file('pge_load.geojson', driver='GeoJSON')
 ```
 
+> [!NOTE]
+> Downloading manually using website times out.
+>
+> Downloading using python script above sometimes hangs part way making it hard to script this automatically. Currently, looks like this dataset has 1289568 records.
+
 ### 1.2 San Diego Gas & Electric (SDG&E)
 
 **Source**: [SDG&E ICM API Explorer](https://icm-api-explorer.sdge.com/)
