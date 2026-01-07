@@ -178,6 +178,8 @@ ladwp = gpd.GeoDataFrame(ladwp, geometry='geometry')
 ladwp.set_crs(epsg=4326, inplace=True)
 ladwp.to_file('ladwp_load.geojson', driver='GeoJSON')
 ```
+> [!NOTE]
+> 34.5kV zip file on website is corrupted...
 
 ### 1.4 Southern California Edison (SCE)
 
