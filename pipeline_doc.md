@@ -180,6 +180,7 @@ ladwp.to_file('ladwp_load.geojson', driver='GeoJSON')
 ```
 > [!NOTE]
 > 34.5kV zip file on website is corrupted...
+> File was updated after reaching out to LADWP and file was retrieved...
 
 ### 1.4 Southern California Edison (SCE)
 
