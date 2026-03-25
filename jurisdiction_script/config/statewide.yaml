@@ -1,0 +1,50 @@
+# jurisdiction section handled by jscript_statewide.py
+# this config only works with statewide script.
+
+priority:
+  pixels: pop/pop_updated2.json
+  attributes:
+    # List attributes here. For each file, multiple columns can be specified
+    # CalEnviroScreen
+    - file: other/ces4/ces4.shp
+      columns:
+        - column: CIscoreP
+          name: CIscoreP
+          join: nearest
+    # Census: multi-family and renters
+    - file: census/mfre.json
+      columns:
+        - column: "% MF"
+          name: Multi-Family Housing Residents
+          join: popmul
+        - column: "% R"
+          name: Renters
+          join: popmul
+    # EVs per 10,000
+    - file: other/lev.json
+      columns:
+        - column: lev_10000
+          name: lev_10000
+          join: numeric
+feasibility:
+  pixels: grids/utilities_pixels.json
+  attributes:
+    # List attributes here. For each file, multiple columns can be specified
+    # NEVI
+    - file: other/nevi.json
+      columns:
+        - column: nevi
+          name: nevi
+          join: binary
+    # IRS 30c
+    - file: other/irs30c.json
+      columns:
+        - column: irs30c
+          name: irs30c
+          join: binary
+    # PG&E
+    - file: other/utility_lines.geojson
+      columns:
+        - column: load_kw
+          name: utility
+          join: max
