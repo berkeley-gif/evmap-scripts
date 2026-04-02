@@ -25,7 +25,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-f', '--files',
         required=True,
-        nargs='4',
+        nargs=4,
         type=str,
         help='List of 4 utility file paths to combine. Must be to PGE, SDGE, LADWP, SOCALED.'
     )
