@@ -61,7 +61,7 @@ params = {
     "outFields": "*",
     "f": "geojson",
     "resultOffset": 0,
-    "resultRecordCount": 1000,
+    "resultRecordCount": 500,
 }
 
 def run(utility_list):
