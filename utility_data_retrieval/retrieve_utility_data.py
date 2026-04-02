@@ -107,7 +107,8 @@ if __name__ == "__main__":
 
     parser.add_argument(
         '-ul', '--utility_list',
-        type=list,
+        nargs='+',
+        type=str,
         default=["pge", "sdge", "ladwp", "socaled"],
         help='List of utilities to retrieve, can be any of ["pge", "sdge", "ladwp", "socaled"].'
     )
