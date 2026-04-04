@@ -5,7 +5,7 @@ from requests.exceptions import ConnectionError
 import sys
 import geopandas as gpd
 
-max_retries = 5
+max_retries = 20
 delay = 3
 
 def load_features_from_arcgis(base_url, params):
@@ -16,8 +16,10 @@ def load_features_from_arcgis(base_url, params):
             try:
                 response = requests.get(base_url, params=params, timeout=60)
                 data = response.json()
-
-            except (ConnectionError, BrokenPipeError) as e:
+                features.extend(data["features"])
+                params["resultOffset"] += params["resultRecordCount"]
+                break
+            except Exception as e:
                 print(f"Attempt {attempt + 1} failed: {e}")
                 if attempt < max_retries - 1:
                     print(f"Retrying in {delay} seconds...")
@@ -25,19 +27,11 @@ def load_features_from_arcgis(base_url, params):
                 else:
                     print("Max retries exceeded. Exiting.")
                     raise
-            except Exception as e:
-                # Handle other unexpected exceptions
-                print(f"An unexpected error occurred: {e}")
-                raise
         if "features" not in data or not data["features"]:
             break
-
-        features.extend(data["features"])
-        params["resultOffset"] += params["resultRecordCount"]
-    return features
+    return gpd.GeoDataFrame.from_features(features)
 
 def write_geojson_file(features, utility):
-    features = gpd.GeoDataFrame(features, geometry='geometry')
     features.set_crs(epsg=4326, inplace=True)
     features.to_file(utility + '_load.geojson', driver='GeoJSON')
 
@@ -61,7 +55,7 @@ params = {
     "outFields": "*",
     "f": "geojson",
     "resultOffset": 0,
-    "resultRecordCount": 100,
+    "resultRecordCount": 1000,
 }
 
 def run(utility_list):
