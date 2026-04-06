@@ -3,10 +3,33 @@ import requests
 import time
 from requests.exceptions import ConnectionError
 import sys
+import pandas as pd
 import geopandas as gpd
 
-max_retries = 5
+max_retries = 20
 delay = 3
+
+def set_params(option="get_all_geojson"):
+    match option:
+        case "get_all_geojson":
+            params = {
+                "where": "1=1",
+                "outFields": "*",
+                "f": "geojson",
+                "resultOffset": 0,
+                "resultRecordCount": 1000,
+            }
+            return params
+        case _:
+            params = {
+                "where": "1=1",
+                "outFields": "*",
+                "f": "geojson",
+                "resultOffset": 0,
+                "resultRecordCount": 1000,
+            }
+            return params
+
 
 def load_features_from_arcgis(base_url, params):
     features = []
@@ -16,8 +39,10 @@ def load_features_from_arcgis(base_url, params):
             try:
                 response = requests.get(base_url, params=params, timeout=60)
                 data = response.json()
-
-            except (ConnectionError, BrokenPipeError) as e:
+                features.extend(data["features"])
+                params["resultOffset"] += params["resultRecordCount"]
+                break
+            except Exception as e:
                 print(f"Attempt {attempt + 1} failed: {e}")
                 if attempt < max_retries - 1:
                     print(f"Retrying in {delay} seconds...")
@@ -25,19 +50,11 @@ def load_features_from_arcgis(base_url, params):
                 else:
                     print("Max retries exceeded. Exiting.")
                     raise
-            except Exception as e:
-                # Handle other unexpected exceptions
-                print(f"An unexpected error occurred: {e}")
-                raise
         if "features" not in data or not data["features"]:
             break
-
-        features.extend(data["features"])
-        params["resultOffset"] += params["resultRecordCount"]
-    return features
+    return gpd.GeoDataFrame.from_features(features)
 
 def write_geojson_file(features, utility):
-    features = gpd.GeoDataFrame(features, geometry='geometry')
     features.set_crs(epsg=4326, inplace=True)
     features.to_file(utility + '_load.geojson', driver='GeoJSON')
 
@@ -56,40 +73,34 @@ urls = {
     "socaled" : ["https://drpep.sce.com/arcgis_server/rest/services/Hosted/ICA_Layer/FeatureServer/2/query", "https://drpep.sce.com/arcgis_server/rest/services/Hosted/ICA_Layer/FeatureServer/3/query"],
 }
 
-params = {
-    "where": "1=1",
-    "outFields": "*",
-    "f": "geojson",
-    "resultOffset": 0,
-    "resultRecordCount": 100,
-}
-
 def run(utility_list):
     for ul in utility_list:
+        print("Working on utility:" + ul)
+                
         match ul:
             case "pge":
-                features = load_features_from_arcgis(urls["pge"], params)
+                features = load_features_from_arcgis(urls["pge"], set_params("get_all_geojson"))
                 features = features[['LoadCapacity_kW', 'geometry']]
                 features = features.rename(columns={'LoadCapacity_kW': 'load_kw'})
                 features['Utility'] = 'pge'
                 write_geojson_file(features, 'pge')
             case "sdge":
-                features = load_features_from_arcgis(urls["sdge"], params)
+                features = load_features_from_arcgis(urls["sdge"], set_params("get_all_geojson"))
                 features['load_kw'] = features['ICAWOF_UNILOAD'] * 1000
                 features = features[['load_kw', 'geometry']]
                 features['Utility'] = 'sdge'
                 write_geojson_file(features, 'sdge')
             case "ladwp":
-                features = load_features_from_arcgis(urls["ladwp"], params)
+                features = load_features_from_arcgis(urls["ladwp"], set_params("get_all_geojson"))
                 features['load_kw'] = features.apply(update_min_value_utility, axis=1)
                 features = features[['load_kw', 'geometry']]
                 features['Utility'] = 'ladwp'
                 write_geojson_file(features, 'ladwp')
             case "socaled":
-                features1 = load_features_from_arcgis(urls["socaled"][0])
+                features1 = load_features_from_arcgis(urls["socaled"][0], set_params("get_all_geojson"))
                 features1['load_kw'] = (features1['ica_overall_load'].astype('float')) * 1000
                 features1 = features1[['load_kw', 'geometry']]
-                features2 = load_features_from_arcgis(urls["socaled"][1])
+                features2 = load_features_from_arcgis(urls["socaled"][1], set_params("get_all_geojson"))
                 features2['load_kw'] = (features2['ica_overall_load'].astype('float')) * 1000
                 features2 = features2[['load_kw', 'geometry']]
                 features = pd.concat([features1, features2], ignore_index=True)
