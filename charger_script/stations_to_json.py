@@ -27,8 +27,8 @@ def run (input):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog='Utility Data Retriever',
-        description='Downloads utility data from ArcGIS services and write it to GeoJson.'
+        prog='Alternative Fuels Data Conversion',
+        description='Converts the CSV of Alternative Fuels Station Data into JSON.'
     )
 
     parser.add_argument(
