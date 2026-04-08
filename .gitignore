@@ -1,6 +1,4 @@
 # Large data files
-*.json
-*.geojson
 *.gdb/
 *.kmz
 *.shp
@@ -8,7 +6,6 @@
 *.dbf
 *.prj
 *.cpg
-*.csv
 
 # Python
 __pycache__/
