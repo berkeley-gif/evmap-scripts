@@ -23,7 +23,7 @@ from ratelimit import limits, sleep_and_retry
 
 
 # API for MapBox Isochrones API
-api_key = "pk.eyJ1IjoiYmVya2VsZXktZ2lmIiwiYSI6ImNtanN5aHlqYTNlc2Iza29qNHFoMWRqYWoifQ.T_1eG5U4w8ZFUub_tZJpxg"
+api_key = "GET_FROM_MAPBOX_API"
 
 def mb_isochrone(mb, gdf, radius = [5, 10, 15], mode="walk", t1=0):
     if mode=="walk":
