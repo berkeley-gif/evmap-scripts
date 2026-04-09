@@ -23,7 +23,7 @@ from ratelimit import limits, sleep_and_retry
 
 
 # API for MapBox Isochrones API
-api_key = "GET_FROM_MAPBOX_API"
+api_key = "GET_FROM_MAPBOX_WEBSITE"
 
 def mb_isochrone(mb, gdf, radius = [5, 10, 15], mode="walk", t1=0):
     if mode=="walk":
@@ -96,9 +96,10 @@ def mb_isochrone(mb, gdf, radius = [5, 10, 15], mode="walk", t1=0):
 
     return(isochrone_gdf)
 
-def run(mb, charger_type, ev_chargers, mins, mode):
+def run(mb, ev_chargers_list, mins, mode):
     mb = mb
-    ev_chargers = gpd.read_file(ev_chargers)
+    charger_type = ev_chargers_list[0]
+    ev_chargers = gpd.read_file(ev_chargers_list[1])
     mins = mins
     mode = mode
     t1 = 0
@@ -114,12 +115,11 @@ def run(mb, charger_type, ev_chargers, mins, mode):
 if __name__ == "__main__":
     mb = MapboxOSRM(api_key=api_key)
 
-    charger_files = {"L2": "data/EVChargingStations_L2.json",
-                    "DCF": "data/EVChargingStations_DCF.json"}
+    charger_files = {"walk": ["L2", "data/EVChargingStations_L2.json"],
+                    "drive": ["DCF", "data/EVChargingStations_DCF.json"]}
     travel_times = [10]
     travel_modes = ["walk", "drive"]
 
-    for key, value in charger_files.items():
-        for mins in travel_times:
-            for mode in travel_modes:
-                run(mb, key, value, mins, mode)
+    for mins in travel_times:
+        for mode in travel_modes:
+            run(mb, charger_files[mode], mins, mode)
