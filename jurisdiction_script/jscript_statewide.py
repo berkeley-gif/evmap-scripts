@@ -43,12 +43,17 @@ def run(config):
     DATA_PATH = r'./data'
     OUTPUT_PATH = r'./out/CA'
 
+    # Get path to boundaries directory
     p = Path(os.path.join(DATA_PATH, 'boundaries'))
+    # Get list of county directories in the boundaries directory
     county_dirs = [x for x in p.iterdir() if x.is_dir()]
 
+    # Loop through all county directories
     for c in county_dirs:
+        # Dictionary containing jurisdictions and their boundary dataset
         jbounds = {}
 
+        # Loop through all jurisdictions in county directory
         jurisdictions = [j for j in c.iterdir() if j.is_dir()]
         for jurisdiction in jurisdictions:
             jname = os.path.basename(os.path.normpath(jurisdiction))
@@ -57,6 +62,7 @@ def run(config):
 
         pixel_dfs = {'priority': {}, 'feasibility': {}}
 
+        # Join attributes listed in config file using normal jurisdiction methods
         for pixel_type in ['priority', 'feasibility']:
             assert pixel_type in config, f'{pixel_type} not found in config file, exiting'
 
