@@ -1,17 +1,18 @@
 """
 Generate Isochrones from EV Charging Stations (L2 and DCF)
 
-This script generates the isochone (number of charging stations from each "pixel")
+This script generates the isochone (number of charging stations from each "pixel"). By default creates 10 min walk and drive
+distances. This can be modified by editing the main section.
 
 Usage:
     generate_isocrones.py
 
 Input:
-    None
-
+    data/EVChargingStations_L2.json
+    data/EVChargingStations_DCF.json
 Output:
-
-
+    data/isochrones_walk_L2_10.json
+    data/isochrones_drive_DCF_10.json
 """
 import numpy as np
 import pandas as pd
@@ -20,7 +21,6 @@ from shapely.geometry import Polygon
 
 from routingpy.routers import MapboxOSRM
 from ratelimit import limits, sleep_and_retry
-
 
 # API for MapBox Isochrones API
 api_key = "GET_FROM_MAPBOX_WEBSITE"
@@ -97,18 +97,32 @@ def mb_isochrone(mb, gdf, radius = [5, 10, 15], mode="walk", t1=0):
     return(isochrone_gdf)
 
 def run(mb, ev_chargers_list, mins, mode):
+    # MapBox API instance
     mb = mb
+    # Type of charger (L2, DCF)
     charger_type = ev_chargers_list[0]
+    # Read in locations of chargers
     ev_chargers = gpd.read_file(ev_chargers_list[1])
+    # How far to search in mins
     mins = mins
+    # Walk or Drive mode
     mode = mode
     t1 = 0
+
+    # Run the MapBox isochrone API
     isochrones = mb_isochrone(mb, ev_chargers, mins, mode, t1)
 
+    # Use subset of DataFrame
     isochrones = isochrones[["EV Level2 EVSE Num", "EV DC Fast Count", "time", "geometry"]]
+    # Convert L2 column to int
     isochrones["EV Level2 EVSE Num"] = isochrones["EV Level2 EVSE Num"].astype(int)
+    # Convert DCF blank entries to NaN
     isochrones["EV DC Fast Count"] = isochrones["EV DC Fast Count"].replace("",np.nan)
-    isochrones["num_chg"] = isochrones["EV Level2 EVSE Num"]
+    # set num_chg to either total L2 or total DCF chargers
+    if mode == "walk":
+        isochrones["num_chg"] = isochrones["EV Level2 EVSE Num"]
+    elif mode == "drive":
+        isochrones['num_chg'] = isochrones['EV DC Fast Count']
 
     isochrones.to_file("data/isochrones_" + mode + "_" + charger_type + "_" + mins + ".json", driver="GeoJSON")
 
