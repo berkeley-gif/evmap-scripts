@@ -8,11 +8,11 @@ Usage:
     generate_isocrones.py
 
 Input:
-    data/EVChargingStations_L2.json
-    data/EVChargingStations_DCF.json
+    - data/EVChargingStations_L2.json
+    - data/EVChargingStations_DCF.json
 Output:
-    data/isochrones_walk_L2_10.json
-    data/isochrones_drive_DCF_10.json
+    - data/isochrones_walk_L2_10.json
+    - data/isochrones_drive_DCF_10.json
 """
 import numpy as np
 import pandas as pd
