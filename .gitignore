@@ -1,6 +1,4 @@
 # Large data files
-*.json
-*.geojson
 *.gdb/
 *.kmz
 *.shp
@@ -8,7 +6,6 @@
 *.dbf
 *.prj
 *.cpg
-*.csv
 
 # Python
 __pycache__/
@@ -37,7 +34,6 @@ wheels/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb
 
 # IDE
 .vscode/
