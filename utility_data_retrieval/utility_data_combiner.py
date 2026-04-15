@@ -8,7 +8,7 @@ def run(files):
 
     for f in files:
         utility_files[filenum] = gpd.read_file(f)
-        filenum =+ 1
+        filenum += 1
 
     statewide = pd.concat(utility_files, ignore_index=True)
     statewide = gpd.GeoDataFrame(statewide, geometry='geometry')
